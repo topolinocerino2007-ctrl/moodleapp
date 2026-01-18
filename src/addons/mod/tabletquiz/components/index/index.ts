@@ -23,34 +23,34 @@ import { CoreText } from '@singletons/text';
 import { CorePromiseUtils } from '@singletons/promise-utils';
 import { Translate } from '@singletons';
 import { CoreEventObserver, CoreEvents } from '@singletons/events';
-import { AddonModTabletTabletQuizPrefetchHandler } from '../../services/handlers/prefetch';
+import { AddonModTabletQuizPrefetchHandler } from '../../services/handlers/prefetch';
 import {
-    AddonModTabletTabletQuiz,
-    AddonModTabletTabletQuizAttemptFinishedData,
-    AddonModTabletTabletQuizAttemptWSData,
-    AddonModTabletTabletQuizCombinedReviewOptions,
-    AddonModTabletTabletQuizGetAttemptAccessInformationWSResponse,
-    AddonModTabletTabletQuizGetTabletQuizAccessInformationWSResponse,
-    AddonModTabletTabletQuizGetUserBestGradeWSResponse,
-    AddonModTabletTabletQuizWSAdditionalData,
+    AddonModTabletQuiz,
+    AddonModTabletQuizAttemptFinishedData,
+    AddonModTabletQuizAttemptWSData,
+    AddonModTabletQuizCombinedReviewOptions,
+    AddonModTabletQuizGetAttemptAccessInformationWSResponse,
+    AddonModTabletQuizGetTabletQuizAccessInformationWSResponse,
+    AddonModTabletQuizGetUserBestGradeWSResponse,
+    AddonModTabletQuizWSAdditionalData,
 } from '../../services/tabletquiz';
-import { AddonModTabletTabletQuizAttempt, AddonModTabletTabletQuizHelper, AddonModTabletTabletQuizTabletQuizData } from '../../services/tabletquiz-helper';
+import { AddonModTabletQuizAttempt, AddonModTabletQuizHelper, AddonModTabletQuizTabletQuizData } from '../../services/tabletquiz-helper';
 import {
-    AddonModTabletTabletQuizAutoSyncData,
-    AddonModTabletTabletQuizSync,
-    AddonModTabletTabletQuizSyncResult,
+    AddonModTabletQuizAutoSyncData,
+    AddonModTabletQuizSync,
+    AddonModTabletQuizSyncResult,
 } from '../../services/tabletquiz-sync';
 import {
     ADDON_MOD_TABLETQUIZ_ATTEMPT_FINISHED_EVENT,
     ADDON_MOD_TABLETQUIZ_AUTO_SYNCED,
     ADDON_MOD_TABLETQUIZ_COMPONENT_LEGACY,
     ADDON_MOD_TABLETQUIZ_PAGE_NAME,
-    AddonModTabletTabletQuizAttemptStates,
+    AddonModTabletQuizAttemptStates,
 } from '../../constants';
 import { QuestionDisplayOptionsMarks } from '@features/question/constants';
 import { CoreAlerts } from '@services/overlays/alerts';
-import { AddonModTabletTabletQuizAttemptInfoComponent } from '../attempt-info/attempt-info';
-import { AddonModTabletTabletQuizAttemptStateComponent } from '../attempt-state/attempt-state';
+import { AddonModTabletQuizAttemptInfoComponent } from '../attempt-info/attempt-info';
+import { AddonModTabletQuizAttemptStateComponent } from '../attempt-state/attempt-state';
 import { CoreCourseModuleNavigationComponent } from '@features/course/components/module-navigation/module-navigation';
 import { CoreCourseModuleInfoComponent } from '@features/course/components/module-info/module-info';
 import { CoreSharedModule } from '@/core/shared.module';
@@ -59,22 +59,22 @@ import { CoreSharedModule } from '@/core/shared.module';
  * Component that displays a tabletquiz entry page.
  */
 @Component({
-    selector: 'addon-mod-tablettabletquiz-index',
-    templateUrl: 'addon-mod-tablettabletquiz-index.html',
+    selector: 'addon-mod-tabletquiz-index',
+    templateUrl: 'addon-mod-tabletquiz-index.html',
     styleUrl: 'index.scss',
     imports: [
         CoreSharedModule,
         CoreCourseModuleInfoComponent,
         CoreCourseModuleNavigationComponent,
-        AddonModTabletTabletQuizAttemptStateComponent,
-        AddonModTabletTabletQuizAttemptInfoComponent,
+        AddonModTabletQuizAttemptStateComponent,
+        AddonModTabletQuizAttemptInfoComponent,
     ],
 })
-export class AddonModTabletTabletQuizIndexComponent extends CoreCourseModuleMainActivityComponent implements OnInit, OnDestroy {
+export class AddonModTabletQuizIndexComponent extends CoreCourseModuleMainActivityComponent implements OnInit, OnDestroy {
 
     component = ADDON_MOD_TABLETQUIZ_COMPONENT_LEGACY;
     pluginName = 'tabletquiz';
-    tabletquiz?: AddonModTabletTabletQuizTabletQuizData; // The tabletquiz.
+    tabletquiz?: AddonModTabletQuizTabletQuizData; // The tabletquiz.
     now?: number; // Current time.
     syncTime?: string; // Last synchronization time.
     hasOffline = false; // Whether the tabletquiz has offline data.
@@ -95,23 +95,23 @@ export class AddonModTabletTabletQuizIndexComponent extends CoreCourseModuleMain
     gradeMethodReadable?: string; // Grade method in a readable format.
     showReviewColumn = false; // Whether to show the review column.
     attempts: TabletQuizAttempt[] = []; // List of attempts the user has made.
-    bestGrade?: AddonModTabletTabletQuizGetUserBestGradeWSResponse; // Best grade data.
+    bestGrade?: AddonModTabletQuizGetUserBestGradeWSResponse; // Best grade data.
     gradeToPass?: string; // Grade to pass.
     hasQuestions = false; // Whether the tabletquiz has questions.
 
-    protected fetchContentDefaultError = 'addon.mod_tablettabletquiz.errorgettabletquiz'; // Default error to show when loading contents.
+    protected fetchContentDefaultError = 'addon.mod_tabletquiz.errorgettabletquiz'; // Default error to show when loading contents.
     protected syncEventName = ADDON_MOD_TABLETQUIZ_AUTO_SYNCED;
 
-    protected autoReview?: AddonModTabletTabletQuizAttemptFinishedData; // Data to auto-review an attempt after finishing.
-    protected tabletquizAccessInfo?: AddonModTabletTabletQuizGetTabletQuizAccessInformationWSResponse; // TabletQuiz access info.
-    protected attemptAccessInfo?: AddonModTabletTabletQuizGetAttemptAccessInformationWSResponse; // Last attempt access info.
+    protected autoReview?: AddonModTabletQuizAttemptFinishedData; // Data to auto-review an attempt after finishing.
+    protected tabletquizAccessInfo?: AddonModTabletQuizGetTabletQuizAccessInformationWSResponse; // TabletQuiz access info.
+    protected attemptAccessInfo?: AddonModTabletQuizGetAttemptAccessInformationWSResponse; // Last attempt access info.
     protected moreAttempts = false; // Whether user can create/continue attempts.
-    protected options?: AddonModTabletTabletQuizCombinedReviewOptions; // Combined review options.
+    protected options?: AddonModTabletQuizCombinedReviewOptions; // Combined review options.
     protected gradebookData?: { grade?: SafeNumber; feedback?: string }; // The gradebook grade and feedback.
-    protected overallStats = false; // Equivalent to overallstats in mod_tablettabletquiz_view_object in Moodle.
+    protected overallStats = false; // Equivalent to overallstats in mod_tabletquiz_view_object in Moodle.
     protected finishedObserver?: CoreEventObserver; // It will observe attempt finished events.
     protected hasPlayed = false; // Whether the user has gone to the tabletquiz player (attempted).
-    protected candidateTabletQuiz?: AddonModTabletTabletQuizTabletQuizData;
+    protected candidateTabletQuiz?: AddonModTabletQuizTabletQuizData;
 
     /**
      * @inheritdoc
@@ -143,7 +143,7 @@ export class AddonModTabletTabletQuizIndexComponent extends CoreCourseModuleMain
             return;
         }
 
-        if (!AddonModTabletTabletQuiz.isTabletQuizOffline(this.tabletquiz)) {
+        if (!AddonModTabletQuiz.isTabletQuizOffline(this.tabletquiz)) {
             // TabletQuiz isn't offline, just open it.
             this.openTabletQuiz();
 
@@ -165,7 +165,7 @@ export class AddonModTabletTabletQuizIndexComponent extends CoreCourseModuleMain
         this.showStatusSpinner = true;
 
         try {
-            await AddonModTabletTabletQuizPrefetchHandler.prefetch(this.module, this.courseId, true);
+            await AddonModTabletQuizPrefetchHandler.prefetch(this.module, this.courseId, true);
 
             // Success downloading, open tabletquiz.
             this.openTabletQuiz();
@@ -187,25 +187,25 @@ export class AddonModTabletTabletQuizIndexComponent extends CoreCourseModuleMain
      */
     protected async fetchContent(refresh?: boolean, sync = false, showErrors = false): Promise<void> {
         // First get the tabletquiz instance.
-        const tabletquiz = await AddonModTabletTabletQuiz.getTabletQuiz(this.courseId, this.module.id);
+        const tabletquiz = await AddonModTabletQuiz.getTabletQuiz(this.courseId, this.module.id);
 
-        this.gradeMethodReadable = AddonModTabletTabletQuiz.getTabletQuizGradeMethod(tabletquiz.grademethod);
+        this.gradeMethodReadable = AddonModTabletQuiz.getTabletQuizGradeMethod(tabletquiz.grademethod);
         this.now = Date.now();
         this.dataRetrieved.emit(tabletquiz);
         this.description = tabletquiz.intro || this.description;
         this.candidateTabletQuiz = tabletquiz;
 
         // Try to get warnings from automatic sync.
-        const warnings = await AddonModTabletTabletQuizSync.getSyncWarnings(tabletquiz.id);
+        const warnings = await AddonModTabletQuizSync.getSyncWarnings(tabletquiz.id);
 
         if (warnings?.length) {
             // Show warnings and delete them so they aren't shown again.
             CoreAlerts.showError(CoreText.buildMessage(warnings));
 
-            await AddonModTabletTabletQuizSync.setSyncWarnings(tabletquiz.id, []);
+            await AddonModTabletQuizSync.setSyncWarnings(tabletquiz.id, []);
         }
 
-        if (AddonModTabletTabletQuiz.isTabletQuizOffline(tabletquiz)) {
+        if (AddonModTabletQuiz.isTabletQuizOffline(tabletquiz)) {
             if (sync) {
                 // Try to sync the tabletquiz.
                 await CorePromiseUtils.ignoreErrors(this.syncActivity(showErrors));
@@ -214,32 +214,32 @@ export class AddonModTabletTabletQuizIndexComponent extends CoreCourseModuleMain
             this.showStatusSpinner = false;
         }
 
-        if (AddonModTabletTabletQuiz.isTabletQuizOffline(tabletquiz)) {
+        if (AddonModTabletQuiz.isTabletQuizOffline(tabletquiz)) {
             // Handle status.
             this.setStatusListener();
 
             // Get last synchronization time and check if sync button should be seen.
-            this.syncTime = await AddonModTabletTabletQuizSync.getReadableSyncTime(tabletquiz.id);
-            this.hasOffline = await AddonModTabletTabletQuizSync.hasDataToSync(tabletquiz.id);
+            this.syncTime = await AddonModTabletQuizSync.getReadableSyncTime(tabletquiz.id);
+            this.hasOffline = await AddonModTabletQuizSync.hasDataToSync(tabletquiz.id);
         }
 
         // Get tabletquiz access info.
-        this.tabletquizAccessInfo = await AddonModTabletTabletQuiz.getTabletQuizAccessInformation(tabletquiz.id, { cmId: this.module.id });
+        this.tabletquizAccessInfo = await AddonModTabletQuiz.getTabletQuizAccessInformation(tabletquiz.id, { cmId: this.module.id });
 
         this.showReviewColumn = this.tabletquizAccessInfo.canreviewmyattempts;
         this.accessRules = this.tabletquizAccessInfo.accessrules;
-        this.unsupportedRules = AddonModTabletTabletQuiz.getUnsupportedRules(this.tabletquizAccessInfo.activerulenames);
+        this.unsupportedRules = AddonModTabletQuiz.getUnsupportedRules(this.tabletquizAccessInfo.activerulenames);
 
         if (tabletquiz.preferredbehaviour) {
             this.behaviourSupported = CoreQuestionBehaviourDelegate.isBehaviourSupported(tabletquiz.preferredbehaviour);
         }
 
         // Get question types in the tabletquiz.
-        const types = await AddonModTabletTabletQuiz.getTabletQuizRequiredQtypes(tabletquiz.id, { cmId: this.module.id });
+        const types = await AddonModTabletQuiz.getTabletQuizRequiredQtypes(tabletquiz.id, { cmId: this.module.id });
 
         // For closed tabletquizzes we don't receive the hasquestions value (to be fixed in MDL-84360), so we need to check the types.
         this.hasQuestions = tabletquiz.hasquestions !== undefined ? tabletquiz.hasquestions !== 0 : types.length > 0;
-        this.unsupportedQuestions = AddonModTabletTabletQuiz.getUnsupportedQuestions(types);
+        this.unsupportedQuestions = AddonModTabletQuiz.getUnsupportedQuestions(types);
         this.hasSupportedQuestions = !!types.find((type) => type != 'random' && this.unsupportedQuestions.indexOf(type) == -1);
 
         await this.getAttempts(tabletquiz, this.tabletquizAccessInfo);
@@ -254,28 +254,28 @@ export class AddonModTabletTabletQuizIndexComponent extends CoreCourseModuleMain
      * @param tabletquiz TabletQuiz instance.
      */
     protected async getAttempts(
-        tabletquiz: AddonModTabletTabletQuizTabletQuizData,
-        accessInfo: AddonModTabletTabletQuizGetTabletQuizAccessInformationWSResponse,
+        tabletquiz: AddonModTabletQuizTabletQuizData,
+        accessInfo: AddonModTabletQuizGetTabletQuizAccessInformationWSResponse,
     ): Promise<void> {
         // Always get the best grade because it includes the grade to pass.
-        this.bestGrade = await AddonModTabletTabletQuiz.getUserBestGrade(tabletquiz.id, { cmId: this.module.id });
+        this.bestGrade = await AddonModTabletQuiz.getUserBestGrade(tabletquiz.id, { cmId: this.module.id });
 
         if (typeof this.bestGrade.gradetopass === 'number') {
-            this.gradeToPass = AddonModTabletTabletQuiz.formatGrade(this.bestGrade.gradetopass, tabletquiz.decimalpoints);
+            this.gradeToPass = AddonModTabletQuiz.formatGrade(this.bestGrade.gradetopass, tabletquiz.decimalpoints);
         }
 
         // Get access information of last attempt (it also works if no attempts made).
-        this.attemptAccessInfo = await AddonModTabletTabletQuiz.getAttemptAccessInformation(tabletquiz.id, 0, { cmId: this.module.id });
+        this.attemptAccessInfo = await AddonModTabletQuiz.getAttemptAccessInformation(tabletquiz.id, 0, { cmId: this.module.id });
 
         // Get attempts.
-        const attempts = await AddonModTabletTabletQuiz.getUserAttempts(tabletquiz.id, { cmId: this.module.id });
+        const attempts = await AddonModTabletQuiz.getUserAttempts(tabletquiz.id, { cmId: this.module.id });
 
         this.attempts = await this.treatAttempts(tabletquiz, accessInfo, attempts);
 
         // Check if user can create/continue attempts.
         if (this.attempts.length) {
             const last = this.attempts[0];
-            this.moreAttempts = !AddonModTabletTabletQuiz.isAttemptCompleted(last.state) || !this.attemptAccessInfo.isfinished;
+            this.moreAttempts = !AddonModTabletQuiz.isAttemptCompleted(last.state) || !this.attemptAccessInfo.isfinished;
         } else {
             this.moreAttempts = !this.attemptAccessInfo.isfinished;
         }
@@ -294,12 +294,12 @@ export class AddonModTabletTabletQuizIndexComponent extends CoreCourseModuleMain
         this.preventMessagesColor = canOnlyPreview ? 'warning' : 'danger';
 
         if (this.hasQuestions) {
-            if (this.attempts.length && !AddonModTabletTabletQuiz.isAttemptCompleted(this.attempts[0].state)) {
+            if (this.attempts.length && !AddonModTabletQuiz.isAttemptCompleted(this.attempts[0].state)) {
                 // Last attempt is unfinished.
                 if (this.tabletquizAccessInfo?.canattempt) {
-                    this.buttonText = 'addon.mod_tablettabletquiz.continueattempttabletquiz';
+                    this.buttonText = 'addon.mod_tabletquiz.continueattempttabletquiz';
                 } else if (this.tabletquizAccessInfo?.canpreview) {
-                    this.buttonText = 'addon.mod_tablettabletquiz.continuepreview';
+                    this.buttonText = 'addon.mod_tabletquiz.continuepreview';
                 }
 
             } else {
@@ -308,13 +308,13 @@ export class AddonModTabletTabletQuizIndexComponent extends CoreCourseModuleMain
                     this.preventMessages = this.attemptAccessInfo?.preventnewattemptreasons || [];
                     if (!this.preventMessages.length) {
                         if (!this.attempts.length) {
-                            this.buttonText = 'addon.mod_tablettabletquiz.attempttabletquiznow';
+                            this.buttonText = 'addon.mod_tabletquiz.attempttabletquiznow';
                         } else {
-                            this.buttonText = 'addon.mod_tablettabletquiz.reattempttabletquiz';
+                            this.buttonText = 'addon.mod_tabletquiz.reattempttabletquiz';
                         }
                     }
                 } else if (this.tabletquizAccessInfo?.canpreview) {
-                    this.buttonText = 'addon.mod_tablettabletquiz.previewtabletquiznow';
+                    this.buttonText = 'addon.mod_tabletquiz.previewtabletquiznow';
                 }
             }
         }
@@ -340,7 +340,7 @@ export class AddonModTabletTabletQuizIndexComponent extends CoreCourseModuleMain
      *
      * @param tabletquiz TabletQuiz.
      */
-    protected async getResultInfo(tabletquiz: AddonModTabletTabletQuizTabletQuizData): Promise<void> {
+    protected async getResultInfo(tabletquiz: AddonModTabletQuizTabletQuizData): Promise<void> {
         if (!this.attempts.length || !tabletquiz.showAttemptsGrades || !this.bestGrade?.hasgrade ||
             this.gradebookData?.grade === undefined) {
             this.showResults = false;
@@ -349,8 +349,8 @@ export class AddonModTabletTabletQuizIndexComponent extends CoreCourseModuleMain
         }
 
         const bestGrade = this.bestGrade.grade;
-        const formattedGradebookGrade = AddonModTabletTabletQuiz.formatGrade(this.gradebookData.grade, tabletquiz.decimalpoints);
-        const formattedBestGrade = AddonModTabletTabletQuiz.formatGrade(bestGrade, tabletquiz.decimalpoints);
+        const formattedGradebookGrade = AddonModTabletQuiz.formatGrade(this.gradebookData.grade, tabletquiz.decimalpoints);
+        const formattedBestGrade = AddonModTabletQuiz.formatGrade(bestGrade, tabletquiz.decimalpoints);
         let gradeToShow = formattedGradebookGrade; // By default we show the grade in the gradebook.
 
         this.showResults = true;
@@ -371,7 +371,7 @@ export class AddonModTabletTabletQuizIndexComponent extends CoreCourseModuleMain
 
         if (tabletquiz.showFeedback) {
             // Get the tabletquiz overall feedback.
-            const response = await AddonModTabletTabletQuiz.getFeedbackForGrade(tabletquiz.id, this.gradebookData.grade, {
+            const response = await AddonModTabletQuiz.getFeedbackForGrade(tabletquiz.id, this.gradebookData.grade, {
                 cmId: this.module.id,
             });
 
@@ -387,15 +387,15 @@ export class AddonModTabletTabletQuizIndexComponent extends CoreCourseModuleMain
             return; // Shouldn't happen.
         }
 
-        await CorePromiseUtils.ignoreErrors(AddonModTabletTabletQuiz.logViewTabletQuiz(this.tabletquiz.id));
+        await CorePromiseUtils.ignoreErrors(AddonModTabletQuiz.logViewTabletQuiz(this.tabletquiz.id));
 
-        this.analyticsLogEvent('mod_tablettabletquiz_view_tabletquiz');
+        this.analyticsLogEvent('mod_tabletquiz_view_tabletquiz');
     }
 
     /**
      * Go to review an attempt that has just been finished.
      */
-    protected async goToAutoReview(attempts: AddonModTabletTabletQuizAttemptWSData[]): Promise<void> {
+    protected async goToAutoReview(attempts: AddonModTabletQuizAttemptWSData[]): Promise<void> {
         if (!this.autoReview) {
             return;
         }
@@ -411,7 +411,7 @@ export class AddonModTabletTabletQuizIndexComponent extends CoreCourseModuleMain
             return;
         }
 
-        const canReview = await AddonModTabletTabletQuizHelper.canReviewAttempt(this.tabletquiz, this.tabletquizAccessInfo, attempt);
+        const canReview = await AddonModTabletQuizHelper.canReviewAttempt(this.tabletquiz, this.tabletquizAccessInfo, attempt);
         if (!canReview) {
             return;
         }
@@ -422,7 +422,7 @@ export class AddonModTabletTabletQuizIndexComponent extends CoreCourseModuleMain
     /**
      * @inheritdoc
      */
-    protected hasSyncSucceed(result: AddonModTabletTabletQuizSyncResult): boolean {
+    protected hasSyncSucceed(result: AddonModTabletQuizSyncResult): boolean {
         if (result.attemptFinished) {
             // An attempt was finished, check completion status.
             this.checkCompletion();
@@ -472,16 +472,16 @@ export class AddonModTabletTabletQuizIndexComponent extends CoreCourseModuleMain
     protected async invalidateContent(): Promise<void> {
         const promises: Promise<void>[] = [];
 
-        promises.push(AddonModTabletTabletQuiz.invalidateTabletQuizData(this.courseId));
+        promises.push(AddonModTabletQuiz.invalidateTabletQuizData(this.courseId));
 
         if (this.tabletquiz) {
-            promises.push(AddonModTabletTabletQuiz.invalidateUserAttemptsForUser(this.tabletquiz.id));
-            promises.push(AddonModTabletTabletQuiz.invalidateTabletQuizAccessInformation(this.tabletquiz.id));
-            promises.push(AddonModTabletTabletQuiz.invalidateTabletQuizRequiredQtypes(this.tabletquiz.id));
-            promises.push(AddonModTabletTabletQuiz.invalidateAttemptAccessInformation(this.tabletquiz.id));
-            promises.push(AddonModTabletTabletQuiz.invalidateCombinedReviewOptionsForUser(this.tabletquiz.id));
-            promises.push(AddonModTabletTabletQuiz.invalidateUserBestGradeForUser(this.tabletquiz.id));
-            promises.push(AddonModTabletTabletQuiz.invalidateGradeFromGradebook(this.courseId));
+            promises.push(AddonModTabletQuiz.invalidateUserAttemptsForUser(this.tabletquiz.id));
+            promises.push(AddonModTabletQuiz.invalidateTabletQuizAccessInformation(this.tabletquiz.id));
+            promises.push(AddonModTabletQuiz.invalidateTabletQuizRequiredQtypes(this.tabletquiz.id));
+            promises.push(AddonModTabletQuiz.invalidateAttemptAccessInformation(this.tabletquiz.id));
+            promises.push(AddonModTabletQuiz.invalidateCombinedReviewOptionsForUser(this.tabletquiz.id));
+            promises.push(AddonModTabletQuiz.invalidateUserBestGradeForUser(this.tabletquiz.id));
+            promises.push(AddonModTabletQuiz.invalidateGradeFromGradebook(this.courseId));
         }
 
         await Promise.all(promises);
@@ -493,7 +493,7 @@ export class AddonModTabletTabletQuizIndexComponent extends CoreCourseModuleMain
      * @param syncEventData Data receiven on sync observer.
      * @returns True if refresh is needed, false otherwise.
      */
-    protected isRefreshSyncNeeded(syncEventData: AddonModTabletTabletQuizAutoSyncData): boolean {
+    protected isRefreshSyncNeeded(syncEventData: AddonModTabletQuizAutoSyncData): boolean {
         if (!this.courseId || !this.module) {
             return false;
         }
@@ -546,7 +546,7 @@ export class AddonModTabletTabletQuizIndexComponent extends CoreCourseModuleMain
     /**
      * @inheritdoc
      */
-    protected async sync(): Promise<AddonModTabletTabletQuizSyncResult> {
+    protected async sync(): Promise<AddonModTabletQuizSyncResult> {
         if (!this.candidateTabletQuiz) {
             return {
                 warnings: [],
@@ -555,7 +555,7 @@ export class AddonModTabletTabletQuizIndexComponent extends CoreCourseModuleMain
             };
         }
 
-        return AddonModTabletTabletQuizSync.syncTabletQuiz(this.candidateTabletQuiz, true);
+        return AddonModTabletQuizSync.syncTabletQuiz(this.candidateTabletQuiz, true);
     }
 
     /**
@@ -567,18 +567,18 @@ export class AddonModTabletTabletQuizIndexComponent extends CoreCourseModuleMain
      * @returns Formatted attempts.
      */
     protected async treatAttempts(
-        tabletquiz: AddonModTabletTabletQuizTabletQuizData,
-        accessInfo: AddonModTabletTabletQuizGetTabletQuizAccessInformationWSResponse,
-        attempts: AddonModTabletTabletQuizAttemptWSData[],
+        tabletquiz: AddonModTabletQuizTabletQuizData,
+        accessInfo: AddonModTabletQuizGetTabletQuizAccessInformationWSResponse,
+        attempts: AddonModTabletQuizAttemptWSData[],
     ): Promise<TabletQuizAttempt[]> {
         if (!attempts || !attempts.length) {
             // There are no attempts to treat.
-            tabletquiz.gradeFormatted = AddonModTabletTabletQuiz.formatGrade(tabletquiz.grade, tabletquiz.decimalpoints);
+            tabletquiz.gradeFormatted = AddonModTabletQuiz.formatGrade(tabletquiz.grade, tabletquiz.decimalpoints);
 
             return [];
         }
 
-        const lastCompleted = AddonModTabletTabletQuiz.getLastCompletedAttemptFromList(attempts);
+        const lastCompleted = AddonModTabletQuiz.getLastCompletedAttemptFromList(attempts);
         let openReview = false;
 
         if (this.autoReview && lastCompleted && lastCompleted.id >= this.autoReview.attemptId) {
@@ -590,34 +590,34 @@ export class AddonModTabletTabletQuizIndexComponent extends CoreCourseModuleMain
         }
 
         const [options] = await Promise.all([
-            AddonModTabletTabletQuiz.getCombinedReviewOptions(tabletquiz.id, { cmId: this.module.id }),
+            AddonModTabletQuiz.getCombinedReviewOptions(tabletquiz.id, { cmId: this.module.id }),
             this.getTabletQuizGrade(),
             openReview ? this.goToAutoReview(attempts) : undefined,
         ]);
 
         this.options = options;
 
-        AddonModTabletTabletQuizHelper.setTabletQuizCalculatedData(tabletquiz, this.options);
+        AddonModTabletQuizHelper.setTabletQuizCalculatedData(tabletquiz, this.options);
 
         this.overallStats = !!lastCompleted && this.options.alloptions.marks >= QuestionDisplayOptionsMarks.MARK_AND_MAX;
 
         // Calculate data to show for each attempt.
         const formattedAttempts = await Promise.all(attempts.map(async (attempt) => {
             const [formattedAttempt, canReview] = await Promise.all([
-                AddonModTabletTabletQuizHelper.setAttemptCalculatedData(tabletquiz, attempt) as Promise<TabletQuizAttempt>,
-                AddonModTabletTabletQuizHelper.canReviewAttempt(tabletquiz, accessInfo, attempt),
+                AddonModTabletQuizHelper.setAttemptCalculatedData(tabletquiz, attempt) as Promise<TabletQuizAttempt>,
+                AddonModTabletQuizHelper.canReviewAttempt(tabletquiz, accessInfo, attempt),
             ]);
 
             formattedAttempt.canReview = canReview;
             if (!canReview) {
-                formattedAttempt.cannotReviewMessage = AddonModTabletTabletQuizHelper.getCannotReviewMessage(tabletquiz, attempt, true);
+                formattedAttempt.cannotReviewMessage = AddonModTabletQuizHelper.getCannotReviewMessage(tabletquiz, attempt, true);
             }
 
-            if (tabletquiz.showFeedback && attempt.state === AddonModTabletTabletQuizAttemptStates.FINISHED &&
+            if (tabletquiz.showFeedback && attempt.state === AddonModTabletQuizAttemptStates.FINISHED &&
                     options.someoptions.overallfeedback && isSafeNumber(formattedAttempt.rescaledGrade)) {
 
                 // Feedback should be displayed, get the feedback for the grade.
-                const response = await AddonModTabletTabletQuiz.getFeedbackForGrade(tabletquiz.id, formattedAttempt.rescaledGrade, {
+                const response = await AddonModTabletQuiz.getFeedbackForGrade(tabletquiz.id, formattedAttempt.rescaledGrade, {
                     cmId: tabletquiz.coursemodule,
                 });
 
@@ -625,7 +625,7 @@ export class AddonModTabletTabletQuizIndexComponent extends CoreCourseModuleMain
                     formattedAttempt.additionalData = [
                         {
                             id: 'feedback',
-                            title: Translate.instant('addon.mod_tablettabletquiz.feedback'),
+                            title: Translate.instant('addon.mod_tabletquiz.feedback'),
                             content: response.feedbacktext,
                         },
                     ];
@@ -644,7 +644,7 @@ export class AddonModTabletTabletQuizIndexComponent extends CoreCourseModuleMain
     protected async getTabletQuizGrade(): Promise<void> {
         try {
             // Get gradebook grade.
-            const data = await AddonModTabletTabletQuiz.getGradeFromGradebook(this.courseId, this.module.id);
+            const data = await AddonModTabletQuiz.getGradeFromGradebook(this.courseId, this.module.id);
 
             if (data) {
                 const grade = data.graderaw ?? (data.grade !== undefined && data.grade !== null ? Number(data.grade) : undefined);
@@ -682,8 +682,8 @@ export class AddonModTabletTabletQuizIndexComponent extends CoreCourseModuleMain
 
 }
 
-type TabletQuizAttempt = AddonModTabletTabletQuizAttempt & {
+type TabletQuizAttempt = AddonModTabletQuizAttempt & {
     canReview?: boolean;
     cannotReviewMessage?: string;
-    additionalData?: AddonModTabletTabletQuizWSAdditionalData[]; // Additional data to display for the attempt.
+    additionalData?: AddonModTabletQuizWSAdditionalData[]; // Additional data to display for the attempt.
 };
