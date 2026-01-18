@@ -13,8 +13,8 @@
 // limitations under the License.
 
 import { toBoolean } from '@/core/transforms/boolean';
-import { AddonModTabletTabletQuizAttemptWSData, AddonModTabletTabletQuizTabletQuizWSData } from '@addons/mod/tabletquiz/services/tabletquiz';
-import { AddonModTabletTabletQuizSync } from '@addons/mod/tabletquiz/services/tabletquiz-sync';
+import { AddonModTabletQuizAttemptWSData, AddonModTabletQuizWSData } from '@addons/mod/tabletquiz/services/tabletquiz';
+import { AddonModTabletQuizSync } from '@addons/mod/tabletquiz/services/tabletquiz-sync';
 import { Component, OnInit, Input, inject } from '@angular/core';
 import { FormGroup, FormBuilder } from '@angular/forms';
 import { CoreSharedModule } from '@/core/shared.module';
@@ -23,17 +23,17 @@ import { CoreSharedModule } from '@/core/shared.module';
  * Component to render the preflight for offline attempts.
  */
 @Component({
-    selector: 'addon-mod-tablettabletquiz-access-offline-attempts',
-    templateUrl: 'addon-mod-tablettabletquiz-access-offline-attempts.html',
+    selector: 'addon-mod-tabletquiz-access-offline-attempts',
+    templateUrl: 'addon-mod-tabletquiz-access-offline-attempts.html',
     imports: [
         CoreSharedModule,
     ],
 })
-export class AddonModTabletTabletQuizAccessOfflineAttemptsComponent implements OnInit {
+export class AddonModTabletQuizAccessOfflineAttemptsComponent implements OnInit {
 
     @Input() rule?: string; // The name of the rule.
-    @Input() tabletquiz?: AddonModTabletTabletQuizTabletQuizWSData; // The tabletquiz the rule belongs to.
-    @Input() attempt?: AddonModTabletTabletQuizAttemptWSData; // The attempt being started/continued.
+    @Input() tabletquiz?: AddonModTabletQuizTabletQuizWSData; // The tabletquiz the rule belongs to.
+    @Input() attempt?: AddonModTabletQuizAttemptWSData; // The attempt being started/continued.
     @Input({ transform: toBoolean }) prefetch = false; // Whether the user is prefetching the tabletquiz.
     @Input() siteId?: string; // Site ID.
     @Input() form?: FormGroup; // Form where to add the form control.
@@ -53,9 +53,10 @@ export class AddonModTabletTabletQuizAccessOfflineAttemptsComponent implements O
             return;
         }
 
-        const time = await AddonModTabletTabletQuizSync.getSyncTime(this.tabletquiz.id);
+        const time = await AddonModTabletQuizSync.getSyncTime(this.tabletquiz.id);
 
         this.syncTimeReadable = AddonModTabletTabletQuizSync.getReadableTimeFromTimestamp(time);
     }
 
 }
+
