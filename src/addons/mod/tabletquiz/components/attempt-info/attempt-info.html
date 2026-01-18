@@ -18,7 +18,10 @@
             <p class="item-heading">{{ 'addon.mod_tabletquiz.completedon' | translate }}</p>
             <p>{{ attempt.timefinish! * 1000 | coreFormatDate }}</p>
         </ion-label>
-        <ion-button expand="full" color="primary" (click)="reviewAttempt()">
+    </ion-item>
+
+    <ion-item>
+        <ion-button expand="block" (click)="reviewAttempt()" style="width: 100%;">
             {{ 'addon.mod_tabletquiz.review' | translate }}
         </ion-button>
     </ion-item>
@@ -78,6 +81,7 @@
             </ion-label>
         </ion-item>
     }
+
 
 
 
