@@ -41,12 +41,12 @@ async reviewAttempt(): Promise<void> {
         return;
     }
 
-    // Estraiamo i dati necessari richiesti dalla pagina di review
+    // Questi 3 parametri sono OBBLIGATORI per non far scattare l'errore del browser
     const courseId = this.tabletquiz.course;
     const cmId = this.tabletquiz.coursemodule;
     const attemptId = this.attempt.id;
 
-    // Usiamo il percorso assoluto che punta direttamente alla rotta del modulo
+    // Usiamo il path assoluto per essere sicuri che Angular riconosca la rotta registrata
     CoreNavigator.navigate(`/mod/tabletquiz/${courseId}/${cmId}/review/${attemptId}`);
 }
     @Input({ required: true }) tabletquiz!: AddonModTabletQuizTabletQuizData;
@@ -140,6 +140,7 @@ async reviewAttempt(): Promise<void> {
     }
 
 }
+
 
 
 
