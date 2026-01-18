@@ -36,18 +36,18 @@ import { CoreSharedModule } from '@/core/shared.module';
     ],
 })
 export class AddonModTabletQuizAttemptInfoComponent implements OnChanges {
-    async reviewAttempt(): Promise<void> {
+async reviewAttempt(): Promise<void> {
     if (!this.attempt || !this.tabletquiz) {
         return;
     }
 
-    CoreNavigator.navigate('/mod/tabletquiz/review', {
+    // Usiamo il Navigator per andare alla pagina specifica del plugin
+    // Nota: usiamo l'ID del corso e dell'istanza del modulo per aiutare il routing
+    CoreNavigator.navigate(`../../review/${this.attempt.id}`, {
         params: {
-            cmId: this.tabletquiz.coursemodule,
             courseId: this.tabletquiz.course,
-            attemptId: this.attempt.id,
-            page: 0,
-        },
+            cmId: this.tabletquiz.coursemodule
+        }
     });
 }
 
@@ -142,4 +142,5 @@ export class AddonModTabletQuizAttemptInfoComponent implements OnChanges {
     }
 
 }
+
 
