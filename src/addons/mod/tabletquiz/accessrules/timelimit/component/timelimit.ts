@@ -15,7 +15,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 
-import { AddonModTabletTabletQuizAttemptWSData, AddonModTabletTabletQuizTabletQuizWSData } from '@addons/mod/tabletquiz/services/tabletquiz';
+import { AddonModTabletQuizAttemptWSData, AddonModTabletQuizTabletQuizWSData } from '@addons/mod/tabletquiz/services/tabletquiz';
 import { CoreTime } from '@singletons/time';
 import { toBoolean } from '@/core/transforms/boolean';
 import { CoreSharedModule } from '@/core/shared.module';
@@ -24,17 +24,17 @@ import { CoreSharedModule } from '@/core/shared.module';
  * Component to render the preflight for time limit.
  */
 @Component({
-    selector: 'addon-mod-tablettabletquiz-access-time-limit',
-    templateUrl: 'addon-mod-tablettabletquiz-access-time-limit.html',
+    selector: 'addon-mod-tabletquiz-access-time-limit',
+    templateUrl: 'addon-mod-tabletquiz-access-time-limit.html',
     imports: [
         CoreSharedModule,
     ],
 })
-export class AddonModTabletTabletQuizAccessTimeLimitComponent implements OnInit {
+export class AddonModTabletQuizAccessTimeLimitComponent implements OnInit {
 
     @Input() rule?: string; // The name of the rule.
-    @Input() tabletquiz?: AddonModTabletTabletQuizTabletQuizWSData; // The tabletquiz the rule belongs to.
-    @Input() attempt?: AddonModTabletTabletQuizAttemptWSData; // The attempt being started/continued.
+    @Input() tabletquiz?: AddonModTabletQuizTabletQuizWSData; // The tabletquiz the rule belongs to.
+    @Input() attempt?: AddonModTabletQuizAttemptWSData; // The attempt being started/continued.
     @Input({ transform: toBoolean }) prefetch = false; // Whether the user is prefetching the tabletquiz.
     @Input() siteId?: string; // Site ID.
     @Input() form?: FormGroup; // Form where to add the form control.
@@ -50,3 +50,4 @@ export class AddonModTabletTabletQuizAccessTimeLimitComponent implements OnInit 
     }
 
 }
+
