@@ -15,7 +15,7 @@
 import { Component, OnInit, Input, inject } from '@angular/core';
 import { FormGroup, FormBuilder } from '@angular/forms';
 
-import { AddonModTabletTabletQuizAttemptWSData, AddonModTabletTabletQuizTabletQuizWSData } from '@addons/mod/tabletquiz/services/tabletquiz';
+import { AddonModTabletQuizAttemptWSData, AddonModTabletQuizTabletQuizWSData } from '@addons/mod/tabletquiz/services/tabletquiz';
 import { toBoolean } from '@/core/transforms/boolean';
 import { CoreSharedModule } from '@/core/shared.module';
 
@@ -23,17 +23,17 @@ import { CoreSharedModule } from '@/core/shared.module';
  * Component to render the preflight for password.
  */
 @Component({
-    selector: 'addon-mod-tablettabletquiz-access-password',
-    templateUrl: 'addon-mod-tablettabletquiz-access-password.html',
+    selector: 'addon-mod-tabletquiz-access-password',
+    templateUrl: 'addon-mod-tabletquiz-access-password.html',
     imports: [
         CoreSharedModule,
     ],
 })
-export class AddonModTabletTabletQuizAccessPasswordComponent implements OnInit {
+export class AddonModTabletQuizAccessPasswordComponent implements OnInit {
 
     @Input() rule?: string; // The name of the rule.
-    @Input() tabletquiz?: AddonModTabletTabletQuizTabletQuizWSData; // The tabletquiz the rule belongs to.
-    @Input() attempt?: AddonModTabletTabletQuizAttemptWSData; // The attempt being started/continued.
+    @Input() tabletquiz?: AddonModTabletQuizTabletQuizWSData; // The tabletquiz the rule belongs to.
+    @Input() attempt?: AddonModTabletQuizAttemptWSData; // The attempt being started/continued.
     @Input({ transform: toBoolean }) prefetch = false; // Whether the user is prefetching the tabletquiz.
     @Input() siteId?: string; // Site ID.
     @Input() form?: FormGroup;
@@ -49,3 +49,4 @@ export class AddonModTabletTabletQuizAccessPasswordComponent implements OnInit {
     }
 
 }
+
