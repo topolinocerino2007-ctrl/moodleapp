@@ -41,16 +41,18 @@ async reviewAttempt(): Promise<void> {
         return;
     }
 
-    // Usiamo il Navigator per andare alla pagina specifica del plugin
-    // Nota: usiamo l'ID del corso e dell'istanza del modulo per aiutare il routing
-    CoreNavigator.navigate(`../../review/${this.attempt.id}`, {
+    // La rotta registrata è: :courseId/:cmId/review/:attemptId
+    // Quindi dobbiamo costruire l'URL esattamente in quest'ordine
+    const courseId = this.tabletquiz.course;
+    const cmId = this.tabletquiz.coursemodule;
+    const attemptId = this.attempt.id;
+
+    CoreNavigator.navigate(`/mod/tabletquiz/${courseId}/${cmId}/review/${attemptId}`, {
         params: {
-            courseId: this.tabletquiz.course,
-            cmId: this.tabletquiz.coursemodule
+            page: 0 // Parametro opzionale per la prima pagina del quiz
         }
     });
 }
-
     @Input({ required: true }) tabletquiz!: AddonModTabletQuizTabletQuizData;
     @Input({ required: true }) attempt!: AddonModTabletQuizAttempt;
     @Input() additionalData?: AddonModTabletQuizWSAdditionalData[]; // Additional data to display for the attempt.
@@ -142,5 +144,6 @@ async reviewAttempt(): Promise<void> {
     }
 
 }
+
 
 
