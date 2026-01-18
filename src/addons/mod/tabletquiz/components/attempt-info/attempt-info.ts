@@ -41,9 +41,13 @@ async reviewAttempt(): Promise<void> {
         return;
     }
 
-    // Usando ../../ torniamo indietro da ":courseId/:cmId" 
-    // e entriamo in "review/:attemptId"
-    CoreNavigator.navigate(`../../review/${this.attempt.id}`);
+    // Estraiamo i dati necessari richiesti dalla pagina di review
+    const courseId = this.tabletquiz.course;
+    const cmId = this.tabletquiz.coursemodule;
+    const attemptId = this.attempt.id;
+
+    // Usiamo il percorso assoluto che punta direttamente alla rotta del modulo
+    CoreNavigator.navigate(`/mod/tabletquiz/${courseId}/${cmId}/review/${attemptId}`);
 }
     @Input({ required: true }) tabletquiz!: AddonModTabletQuizTabletQuizData;
     @Input({ required: true }) attempt!: AddonModTabletQuizAttempt;
@@ -136,6 +140,7 @@ async reviewAttempt(): Promise<void> {
     }
 
 }
+
 
 
 
