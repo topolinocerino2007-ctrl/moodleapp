@@ -19,6 +19,12 @@
             <p>{{ attempt.timefinish! * 1000 | coreFormatDate }}</p>
         </ion-label>
     </ion-item>
+       <ion-item>
+        <ion-button expand="full" color="primary" (click)="reviewAttempt()">
+            {{ 'addon.mod_tabletquiz.review' | translate }}
+        </ion-button>
+    </ion-item>
+}
 
     @if (timeTaken) {
         <ion-item class="ion-text-wrap addon-mod_tabletquiz-attempt-duration">
@@ -76,3 +82,4 @@
     }
 
 }
+
