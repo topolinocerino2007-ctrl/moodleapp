@@ -13,6 +13,7 @@
 // limitations under the License.
 
 import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
+import { CoreNavigator } from '@services/navigator';
 import { AddonModTabletQuizAttempt, AddonModTabletQuizTabletQuizData } from '../../services/tabletquiz-helper';
 import { AddonModTabletQuiz, AddonModTabletQuizWSAdditionalData } from '../../services/tabletquiz';
 import { ADDON_MOD_TABLETQUIZ_COMPONENT_LEGACY, AddonModTabletQuizAttemptStates } from '../../constants';
@@ -35,6 +36,20 @@ import { CoreSharedModule } from '@/core/shared.module';
     ],
 })
 export class AddonModTabletQuizAttemptInfoComponent implements OnChanges {
+    async reviewAttempt(): Promise<void> {
+    if (!this.attempt || !this.tabletquiz) {
+        return;
+    }
+
+    CoreNavigator.navigate('/mod/tabletquiz/review', {
+        params: {
+            cmId: this.tabletquiz.coursemodule,
+            courseId: this.tabletquiz.course,
+            attemptId: this.attempt.id,
+            page: 0,
+        },
+    });
+}
 
     @Input({ required: true }) tabletquiz!: AddonModTabletQuizTabletQuizData;
     @Input({ required: true }) attempt!: AddonModTabletQuizAttempt;
@@ -127,3 +142,4 @@ export class AddonModTabletQuizAttemptInfoComponent implements OnChanges {
     }
 
 }
+
