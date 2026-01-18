@@ -41,17 +41,9 @@ async reviewAttempt(): Promise<void> {
         return;
     }
 
-    // La rotta registrata è: :courseId/:cmId/review/:attemptId
-    // Quindi dobbiamo costruire l'URL esattamente in quest'ordine
-    const courseId = this.tabletquiz.course;
-    const cmId = this.tabletquiz.coursemodule;
-    const attemptId = this.attempt.id;
-
-    CoreNavigator.navigate(`/mod/tabletquiz/${courseId}/${cmId}/review/${attemptId}`, {
-        params: {
-            page: 0 // Parametro opzionale per la prima pagina del quiz
-        }
-    });
+    // Usando ../../ torniamo indietro da ":courseId/:cmId" 
+    // e entriamo in "review/:attemptId"
+    CoreNavigator.navigate(`../../review/${this.attempt.id}`);
 }
     @Input({ required: true }) tabletquiz!: AddonModTabletQuizTabletQuizData;
     @Input({ required: true }) attempt!: AddonModTabletQuizAttempt;
@@ -144,6 +136,7 @@ async reviewAttempt(): Promise<void> {
     }
 
 }
+
 
 
 
