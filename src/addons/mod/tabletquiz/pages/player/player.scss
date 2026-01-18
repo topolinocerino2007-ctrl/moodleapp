@@ -1,0 +1,27 @@
+@use "theme/globals" as *;
+@use "sass:math";
+
+$tabletquiz-timer-warn-color: $red !default;
+$tabletquiz-timer-iterations: 15 !default;
+
+:host {
+    core-timer {
+        // Make the timer go red when it's reaching 0.
+        @for $i from 0 through $tabletquiz-timer-iterations {
+            &.core-timer-timeleft-#{$i} {
+                $timer-background: rgba($tabletquiz-timer-warn-color, 1 - math.div($i, $tabletquiz-timer-iterations));
+                --timer-background: #{$timer-background};
+                @if $i <= math.div($tabletquiz-timer-iterations, 2) {
+                    --timer-text-color: var(--white);
+                }
+            }
+        }
+    }
+
+    ion-item.core-question-blocked,
+    ion-item.core-question-complete,
+    ion-item.core-question-answersaved,
+    ion-item.core-question-requiresgrading {
+        --background: var(--core-question-saved-color-bg);
+    }
+}
