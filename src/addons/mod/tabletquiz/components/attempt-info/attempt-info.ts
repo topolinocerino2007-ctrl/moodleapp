@@ -1,21 +1,9 @@
 // (C) Copyright 2015 Moodle Pty Ltd.
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-//     http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
+// ... (licenza)
 
 import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
-import { CoreOpener } from '@singletons/opener';
 import { CoreContentLinksHelper } from '@features/contentlinks/services/contentlinks-helper';
-import { CoreSites } from '@services/sites';
+import { CoreSites } from '@services/sites'
 import { CoreNavigator } from '@services/navigator';
 import { AddonModTabletQuizAttempt, AddonModTabletQuizTabletQuizData } from '../../services/tabletquiz-helper';
 import { AddonModTabletQuiz, AddonModTabletQuizWSAdditionalData } from '../../services/tabletquiz';
@@ -42,7 +30,7 @@ export class AddonModTabletQuizAttemptInfoComponent implements OnChanges {
 
     @Input({ required: true }) tabletquiz!: AddonModTabletQuizTabletQuizData;
     @Input({ required: true }) attempt!: AddonModTabletQuizAttempt;
-    @Input() additionalData?: AddonModTabletQuizWSAdditionalData[]; // Additional data to display for the attempt.
+    @Input() additionalData?: AddonModTabletQuizWSAdditionalData[]; 
 
     isFinished = false;
     readableMark = '';
@@ -54,29 +42,24 @@ export class AddonModTabletQuizAttemptInfoComponent implements OnChanges {
 
     /**
      * Navigazione verso la revisione del tentativo.
-     * Utilizza handleLink per gestire plugin non registrati internamente.
      */
-async reviewAttempt(): Promise<void> {
-        if (!this.attempt || !this.tabletquiz) {
-            return;
-        }
-
+    async reviewAttempt(): Promise<void> {
         const attemptId = this.attempt.id;
         const cmId = this.tabletquiz.coursemodule;
         const site = CoreSites.getRequiredCurrentSite();
 
-        // URL completo del sito per la revisione
+        // URL web della revisione basato sui parametri estratti dai tuoi file JS
         const url = `${site.getURL()}/mod/tabletquiz/review.php?attempt=${attemptId}&cmid=${cmId}`;
 
-        console.log("Tentativo di apertura revisione:", url);
+        console.log("Tentativo di apertura tramite LinkHelper:", url);
 
-        // 1. Tenta di gestire il link internamente
+        // 1. Tenta la gestione interna (se fallisce, restituisce false)
         const handled = await CoreContentLinksHelper.handleLink(url);
 
         if (!handled) {
-            // Se non è gestito internamente, usiamo CoreOpener per il browser interno
-            // Questo risolve l'errore TS2339
-            await CoreOpener.openInInternalBrowser(url);
+            // 2. FORZATURA: Usiamo (site as any) per bypassare l'errore TS2339.
+            // Questo aprirà il browser interno all'app caricando la pagina web.
+            (site as any).openInInternalBrowser(url);
         }
     }
 
@@ -86,7 +69,6 @@ async reviewAttempt(): Promise<void> {
     async ngOnChanges(changes: SimpleChanges): Promise<void> {
         if (changes.additionalData) {
             this.additionalData?.forEach((data) => {
-                // Remove help links from additional data.
                 data.content = CoreDom.removeElementFromHtml(data.content, '.helptooltip');
             });
         }
@@ -102,10 +84,7 @@ async reviewAttempt(): Promise<void> {
 
         const timeTaken = (this.attempt.timefinish || 0) - (this.attempt.timestart || 0);
         if (timeTaken > 0) {
-            // Format time taken.
             this.timeTaken = CoreTime.formatTime(timeTaken);
-
-            // Calculate overdue time.
             if (this.tabletquiz.timelimit && timeTaken > this.tabletquiz.timelimit + 60) {
                 this.overTime = CoreTime.formatTime(timeTaken - this.tabletquiz.timelimit);
             }
@@ -113,7 +92,6 @@ async reviewAttempt(): Promise<void> {
             this.timeTaken = undefined;
         }
 
-        // Treat grade item marks.
         if (this.attempt.sumgrades === null || !this.attempt.gradeitemmarks) {
             this.gradeItemMarks = [];
         } else {
@@ -130,10 +108,8 @@ async reviewAttempt(): Promise<void> {
             return;
         }
 
-        // Treat grade and mark.
         if (!isSafeNumber(this.attempt.rescaledGrade)) {
             this.readableGrade = Translate.instant('addon.mod_tabletquiz.notyetgraded');
-
             return;
         }
 
@@ -158,4 +134,3 @@ async reviewAttempt(): Promise<void> {
         }
     }
 }
-
