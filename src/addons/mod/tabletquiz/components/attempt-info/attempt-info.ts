@@ -12,10 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-
 import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { CoreContentLinksHelper } from '@features/contentlinks/services/contentlinks-helper';
-import { CoreSites } from '@services/sites'
+import { CoreSites } from '@services/sites';
 import { CoreNavigator } from '@services/navigator';
 import { AddonModTabletQuizAttempt, AddonModTabletQuizTabletQuizData } from '../../services/tabletquiz-helper';
 import { AddonModTabletQuiz, AddonModTabletQuizWSAdditionalData } from '../../services/tabletquiz';
@@ -39,28 +38,7 @@ import { CoreSharedModule } from '@/core/shared.module';
     ],
 })
 export class AddonModTabletQuizAttemptInfoComponent implements OnChanges {
-async reviewAttempt(): Promise<void> {
-    const attemptId = this.attempt.id;
-    const cmId = this.tabletquiz.coursemodule;
-    const site = CoreSites.getRequiredCurrentSite();
 
-    // Costruiamo l'URL web della revisione
-    const url = `${site.getURL()}/mod/tabletquiz/review.php?attempt=${attemptId}&cmid=${cmId}`;
-
-    console.log("Tentativo di apertura tramite LinkHelper:", url);
-
-    // handleLink proverà a fare tre cose:
-    // 1. Cercare un componente interno (se esiste nascosto)
-    // 2. Cercare di scaricare i dati via WebService
-    // 3. Aprire il browser interno all'app (senza errore blu)
-    const handled = await CoreContentLinksHelper.handleLink(url);
-
-    if (!handled) {
-        // Se l'app proprio non sa cosa fare, usiamo l'apertura forzata del sito
-        // Questo evita l'errore "Content not available" al 100%
-        site.openInInternalBrowser(url);
-    }
-}
     @Input({ required: true }) tabletquiz!: AddonModTabletQuizTabletQuizData;
     @Input({ required: true }) attempt!: AddonModTabletQuizAttempt;
     @Input() additionalData?: AddonModTabletQuizWSAdditionalData[]; // Additional data to display for the attempt.
@@ -72,6 +50,34 @@ async reviewAttempt(): Promise<void> {
     overTime?: string;
     gradeItemMarks: { name: string; grade: string }[] = [];
     component = ADDON_MOD_TABLETQUIZ_COMPONENT_LEGACY;
+
+    /**
+     * Navigazione verso la revisione del tentativo.
+     * Utilizza handleLink per gestire plugin non registrati internamente.
+     */
+    async reviewAttempt(): Promise<void> {
+        if (!this.attempt || !this.tabletquiz) {
+            return;
+        }
+
+        const attemptId = this.attempt.id;
+        const cmId = this.tabletquiz.coursemodule;
+        const site = CoreSites.getRequiredCurrentSite();
+
+        // URL completo del sito per la revisione
+        const url = `${site.getURL()}/mod/tabletquiz/review.php?attempt=${attemptId}&cmid=${cmId}`;
+
+        console.log("Tentativo di apertura revisione:", url);
+
+        // handleLink prova a intercettare il link. 
+        // Se restituisce false, significa che il componente nativo non esiste nell'app.
+        const handled = await CoreContentLinksHelper.handleLink(url);
+
+        if (!handled) {
+            // Se non è gestito internamente, apriamo il browser interno per evitare l'errore blu
+            site.openInInternalBrowser(url);
+        }
+    }
 
     /**
      * @inheritdoc
@@ -150,15 +156,4 @@ async reviewAttempt(): Promise<void> {
             this.readableGrade = Translate.instant('addon.mod_tabletquiz.outof', { $a: gradeObject });
         }
     }
-
 }
-
-
-
-
-
-
-
-
-
-
