@@ -37,13 +37,17 @@ import { CoreSharedModule } from '@/core/shared.module';
 })
 export class AddonModTabletQuizAttemptInfoComponent implements OnChanges {
 async reviewAttempt(): Promise<void> {
-    const courseId = this.tabletquiz.course;
-    const cmId = this.tabletquiz.coursemodule;
     const attemptId = this.attempt.id;
+    const cmId = this.tabletquiz.coursemodule;
 
-    // Usiamo il path che l'app usa per i componenti aggiuntivi (Addons)
-    // Nota: 'tabletquiz' deve essere scritto esattamente come la cartella del plugin
-    CoreNavigator.navigate(`/mod/tabletquiz/${courseId}/${cmId}/review/${attemptId}`);
+    // Costruiamo l'URL esatto che il server Moodle si aspetta
+    const url = `${CoreSites.getRequiredCurrentSite().getURL()}/mod/tabletquiz/review.php?attempt=${attemptId}&cmid=${cmId}`;
+
+    // handleLink è molto più potente di navigate perché:
+    // 1. Controlla se esiste una rotta interna
+    // 2. Se non esiste, prova a scaricare il contenuto via WebService
+    // 3. Se fallisce anche quello, apre la pagina web in modo sicuro senza errore blu
+    await CoreContentLinksHelper.handleLink(url);
 }
     @Input({ required: true }) tabletquiz!: AddonModTabletQuizTabletQuizData;
     @Input({ required: true }) attempt!: AddonModTabletQuizAttempt;
@@ -136,6 +140,7 @@ async reviewAttempt(): Promise<void> {
     }
 
 }
+
 
 
 
