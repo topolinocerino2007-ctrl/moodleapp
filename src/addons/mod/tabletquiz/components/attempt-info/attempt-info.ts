@@ -39,15 +39,24 @@ export class AddonModTabletQuizAttemptInfoComponent implements OnChanges {
 async reviewAttempt(): Promise<void> {
     const attemptId = this.attempt.id;
     const cmId = this.tabletquiz.coursemodule;
+    const site = CoreSites.getRequiredCurrentSite();
 
-    // Costruiamo l'URL esatto che il server Moodle si aspetta
-    const url = `${CoreSites.getRequiredCurrentSite().getURL()}/mod/tabletquiz/review.php?attempt=${attemptId}&cmid=${cmId}`;
+    // Costruiamo l'URL web della revisione
+    const url = `${site.getURL()}/mod/tabletquiz/review.php?attempt=${attemptId}&cmid=${cmId}`;
 
-    // handleLink è molto più potente di navigate perché:
-    // 1. Controlla se esiste una rotta interna
-    // 2. Se non esiste, prova a scaricare il contenuto via WebService
-    // 3. Se fallisce anche quello, apre la pagina web in modo sicuro senza errore blu
-    await CoreContentLinksHelper.handleLink(url);
+    console.log("Tentativo di apertura tramite LinkHelper:", url);
+
+    // handleLink proverà a fare tre cose:
+    // 1. Cercare un componente interno (se esiste nascosto)
+    // 2. Cercare di scaricare i dati via WebService
+    // 3. Aprire il browser interno all'app (senza errore blu)
+    const handled = await CoreContentLinksHelper.handleLink(url);
+
+    if (!handled) {
+        // Se l'app proprio non sa cosa fare, usiamo l'apertura forzata del sito
+        // Questo evita l'errore "Content not available" al 100%
+        site.openInInternalBrowser(url);
+    }
 }
     @Input({ required: true }) tabletquiz!: AddonModTabletQuizTabletQuizData;
     @Input({ required: true }) attempt!: AddonModTabletQuizAttempt;
@@ -140,6 +149,7 @@ async reviewAttempt(): Promise<void> {
     }
 
 }
+
 
 
 
