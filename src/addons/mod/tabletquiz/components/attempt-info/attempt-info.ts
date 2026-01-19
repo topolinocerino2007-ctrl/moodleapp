@@ -12,7 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+
 import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
+import { CoreContentLinksHelper } from '@features/contentlinks/services/contentlinks-helper';
+import { CoreSites } from '@services/sites'
 import { CoreNavigator } from '@services/navigator';
 import { AddonModTabletQuizAttempt, AddonModTabletQuizTabletQuizData } from '../../services/tabletquiz-helper';
 import { AddonModTabletQuiz, AddonModTabletQuizWSAdditionalData } from '../../services/tabletquiz';
@@ -149,6 +152,7 @@ async reviewAttempt(): Promise<void> {
     }
 
 }
+
 
 
 
