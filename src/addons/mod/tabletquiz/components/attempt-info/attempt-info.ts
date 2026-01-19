@@ -37,16 +37,12 @@ import { CoreSharedModule } from '@/core/shared.module';
 })
 export class AddonModTabletQuizAttemptInfoComponent implements OnChanges {
 async reviewAttempt(): Promise<void> {
-    if (!this.attempt || !this.tabletquiz) {
-        return;
-    }
-
-    // Questi 3 parametri sono OBBLIGATORI per non far scattare l'errore del browser
     const courseId = this.tabletquiz.course;
     const cmId = this.tabletquiz.coursemodule;
     const attemptId = this.attempt.id;
 
-    // Usiamo il path assoluto per essere sicuri che Angular riconosca la rotta registrata
+    // Usiamo il path che l'app usa per i componenti aggiuntivi (Addons)
+    // Nota: 'tabletquiz' deve essere scritto esattamente come la cartella del plugin
     CoreNavigator.navigate(`/mod/tabletquiz/${courseId}/${cmId}/review/${attemptId}`);
 }
     @Input({ required: true }) tabletquiz!: AddonModTabletQuizTabletQuizData;
@@ -140,6 +136,7 @@ async reviewAttempt(): Promise<void> {
     }
 
 }
+
 
 
 
