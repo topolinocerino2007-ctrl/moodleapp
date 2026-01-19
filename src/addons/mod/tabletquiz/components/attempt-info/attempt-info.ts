@@ -43,25 +43,38 @@ export class AddonModTabletQuizAttemptInfoComponent implements OnChanges {
     /**
      * Navigazione verso la revisione del tentativo.
      */
-    async reviewAttempt(): Promise<void> {
-        const attemptId = this.attempt.id;
-        const cmId = this.tabletquiz.coursemodule;
-        const site = CoreSites.getRequiredCurrentSite();
+async reviewAttempt(): Promise<void> {
+    const attemptId = this.attempt.id;
+    const cmId = this.tabletquiz.coursemodule;
+    const courseId = this.tabletquiz.course;
+    const site = CoreSites.getRequiredCurrentSite();
 
-        // URL web della revisione basato sui parametri estratti dai tuoi file JS
-        const url = `${site.getURL()}/mod/tabletquiz/review.php?attempt=${attemptId}&cmid=${cmId}`;
+    // 1. ROTTA NATIVA (Il "Sacro Graal"): 
+    // Ora che l'ID è com.moodle.moodlemobile, questa rotta dovrebbe sbloccarsi
+    const nativePath = `addon/mod_tabletquiz/review/${courseId}/${cmId}/${attemptId}`;
+    
+    // 2. URL WEB (Il Piano B):
+    const url = `${site.getURL()}/mod/tabletquiz/review.php?attempt=${attemptId}&cmid=${cmId}`;
 
-        console.log("Tentativo di apertura tramite LinkHelper:", url);
+    console.log("Tentativo di revisione nativa su path:", nativePath);
 
-        // 1. Tenta la gestione interna (se fallisce, restituisce false)
+    try {
+        // Proviamo prima la via più pulita: navigazione interna Angular
+        await CoreNavigator.navigate(nativePath);
+        console.log("Navigazione nativa riuscita.");
+    } catch (error) {
+        console.warn("Rotta nativa non mappata, provo con ContentLinksHelper o Browser:", error);
+
+        // Se la rotta nativa non è registrata nell'addon, usiamo il tuo metodo originale
         const handled = await CoreContentLinksHelper.handleLink(url);
 
         if (!handled) {
-            // 2. FORZATURA: Usiamo (site as any) per bypassare l'errore TS2339.
-            // Questo aprirà il browser interno all'app caricando la pagina web.
+            // Se nemmeno l'Helper lo gestisce, forziamo l'apertura interna.
+            // Grazie all'ID allineato nel config.xml, il server non ti butterà fuori.
             (site as any).openInInternalBrowser(url);
         }
     }
+}
 
     /**
      * @inheritdoc
@@ -134,3 +147,4 @@ export class AddonModTabletQuizAttemptInfoComponent implements OnChanges {
         }
     }
 }
+
