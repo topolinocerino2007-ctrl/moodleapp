@@ -13,6 +13,7 @@
 // limitations under the License.
 
 import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
+import { CoreOpener } from '@singletons/opener';
 import { CoreContentLinksHelper } from '@features/contentlinks/services/contentlinks-helper';
 import { CoreSites } from '@services/sites';
 import { CoreNavigator } from '@services/navigator';
@@ -55,7 +56,7 @@ export class AddonModTabletQuizAttemptInfoComponent implements OnChanges {
      * Navigazione verso la revisione del tentativo.
      * Utilizza handleLink per gestire plugin non registrati internamente.
      */
-    async reviewAttempt(): Promise<void> {
+async reviewAttempt(): Promise<void> {
         if (!this.attempt || !this.tabletquiz) {
             return;
         }
@@ -69,13 +70,13 @@ export class AddonModTabletQuizAttemptInfoComponent implements OnChanges {
 
         console.log("Tentativo di apertura revisione:", url);
 
-        // handleLink prova a intercettare il link. 
-        // Se restituisce false, significa che il componente nativo non esiste nell'app.
+        // 1. Tenta di gestire il link internamente
         const handled = await CoreContentLinksHelper.handleLink(url);
 
         if (!handled) {
-            // Se non è gestito internamente, apriamo il browser interno per evitare l'errore blu
-            site.openInInternalBrowser(url);
+            // Se non è gestito internamente, usiamo CoreOpener per il browser interno
+            // Questo risolve l'errore TS2339
+            await CoreOpener.openInInternalBrowser(url);
         }
     }
 
@@ -157,3 +158,4 @@ export class AddonModTabletQuizAttemptInfoComponent implements OnChanges {
         }
     }
 }
+
