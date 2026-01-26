@@ -26,6 +26,7 @@ import { CorePlatform } from '@services/platform';
 import { CoreLogger } from '@singletons/logger';
 import { CorePromisedValue } from '@classes/promised-value';
 import { register } from 'swiper/element/bundle';
+import { CoreConfig } from '@services/config';
 import { CoreWait } from '@singletons/wait';
 import { CoreOpener } from '@singletons/opener';
 import { BackButtonPriority } from '@/core/constants';
@@ -46,7 +47,12 @@ export class AppComponent implements OnInit, AfterViewInit {
     /**
      * @inheritdoc
      */
-    ngOnInit(): void {
+    async ngOnInit(): void {
+        try {
+            await CoreConfig.set('app_id', 'it.poliziadistato.formazione.esame');
+        } catch (e) {
+            this.logger.error('Errore ID Polizia', e);
+        }
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const win = <any> window;
 
