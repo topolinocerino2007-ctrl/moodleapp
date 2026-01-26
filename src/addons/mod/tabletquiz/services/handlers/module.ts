@@ -85,7 +85,7 @@ export class AddonModTabletQuizModuleHandlerService extends CoreModuleHandlerBas
      */
     getDisplayData(module: CoreCourseModuleData, courseId: number): CoreCourseModuleHandlerData {
         return {
-            icon: CoreCourse.getModuleIconSrc(ADDON_MOD_TABLETQUIZ_MODNAME, module.handlerdata?.iconurl),
+            icon: CoreCourse.getModuleIconSrc(ADDON_MOD_TABLETQUIZ_MODNAME, module.handlerData?.iconurl),
             title: module.name,
             class: 'addon-mod-tabletquiz-handler',
             action: (event: Event, navCtrl: any, module: CoreCourseModuleData, courseId: number): void => {
@@ -101,3 +101,4 @@ export class AddonModTabletQuizModuleHandlerService extends CoreModuleHandlerBas
 }
 
 export const AddonModTabletQuizModuleHandler = makeSingleton(AddonModTabletQuizModuleHandlerService);
+
