@@ -14,9 +14,6 @@ import { CoreDom } from '@singletons/dom';
 import { isSafeNumber } from '@/core/utils/types';
 import { AddonModTabletQuizAttemptStateComponent } from '../attempt-state/attempt-state';
 import { CoreSharedModule } from '@/core/shared.module';
-import { CoreNavigator } from '@services/navigator';
-import { CoreSites } from '@services/sites';
-import { CoreContentLinksHelper } from '@features/contentlinks/services/contentlinks-helper';
 
 /**
  * Component that displays an attempt info.
@@ -141,6 +138,7 @@ export class AddonModTabletQuizAttemptInfoComponent implements OnChanges {
         }
     }
 }
+
 
 
 
