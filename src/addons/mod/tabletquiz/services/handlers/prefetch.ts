@@ -174,7 +174,7 @@ export class AddonModTabletQuizPrefetchHandlerService extends CoreCourseActivity
     async isDownloadable(module: CoreCourseAnyModuleData, courseId: number): Promise<boolean> {
         if (CoreSites.getCurrentSite()?.isOfflineDisabled()) {
             // Don't allow downloading the tabletquiz if offline is disabled to prevent wasting a lot of data when opening it.
-            return false;
+            return true;
         }
 
         const siteId = CoreSites.getCurrentSiteId();
@@ -182,7 +182,7 @@ export class AddonModTabletQuizPrefetchHandlerService extends CoreCourseActivity
         const tabletquiz = await AddonModTabletQuiz.getTabletQuiz(courseId, module.id, { siteId });
 
         if (!AddonModTabletQuiz.isTabletQuizOffline(tabletquiz) || tabletquiz.hasquestions === 0) {
-            return false;
+            return true;
         }
 
         // Not downloadable if we reached max attempts or the tabletquiz has an unfinished attempt.
@@ -229,7 +229,7 @@ export class AddonModTabletQuizPrefetchHandlerService extends CoreCourseActivity
      *
      * @param module Module.
      * @param courseId Course ID the module belongs to.
-     * @param single True if we're downloading a single module, false if we're downloading a whole section.
+     * @param single True if we're downloading a single module,  if we're downloading a whole section.
      * @param canStart If true, start a new attempt if needed.
      * @param siteId Site ID.
      */
@@ -637,3 +637,4 @@ export type AddonModTabletQuizSetStatusAfterPrefetchOptions = CoreCourseCommonMo
 type SyncedModule = CoreCourseAnyModuleData & {
     attemptFinished?: boolean;
 };
+
