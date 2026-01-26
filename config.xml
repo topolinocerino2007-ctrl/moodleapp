@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='utf-8'?>
-<widget android-versionCode="1010" id="it.poliziadistato.formazione.esame" ios-CFBundleVersion="1.0.10" version="1.0.10" versionCode="1010" xmlns="http://www.w3.org/ns/widgets" xmlns:android="http://schemas.android.com/apk/res/android" xmlns:cdv="http://cordova.apache.org/ns/1.0">
+<widget android-versionCode="1010" id="it.poliziadistato.formazioneps.esame" ios-CFBundleVersion="1.0.10" version="1.0.10" versionCode="1010" xmlns="http://www.w3.org/ns/widgets" xmlns:android="http://schemas.android.com/apk/res/android" xmlns:cdv="http://cordova.apache.org/ns/1.0">
     <name>Esame Offline</name>
     <description>Esame Offline</description>
     <author email="" href="">Moodle Mobile team</author>
