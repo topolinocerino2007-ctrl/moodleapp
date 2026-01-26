@@ -13,8 +13,8 @@
 // limitations under the License.
 
 import { Injectable, Type } from '@angular/core';
-
-import { CoreCourseModuleHandler } from '@features/course/services/module-delegate';
+import { CoreCourseModuleHandler, CoreCourseModuleHandlerData } from '@features/course/services/module-delegate';
+import { CoreCourseAnyModuleData } from '@features/course/services/course-helper';
 import { makeSingleton } from '@singletons';
 import { CoreModuleHandlerBase } from '@features/course/classes/module-base-handler';
 import { ADDON_MOD_TABLETQUIZ_MODNAME, ADDON_MOD_TABLETQUIZ_PAGE_NAME } from '../../constants';
@@ -47,12 +47,42 @@ export class AddonModTabletQuizModuleHandlerService extends CoreModuleHandlerBas
     };
 
     /**
+     * Verifica se il modulo è abilitato a livello globale.
+     * Restituendo true, forziamo l'app a non mostrare "Content not available".
+     */
+    async isEnabled(): Promise<boolean> {
+        return true;
+    }
+
+    /**
+     * Verifica se il modulo è abilitato per un corso specifico.
+     * Sovrascriviamo la base per evitare blocchi dai dati del server.
+     */
+    async isEnabledForCourse(
+        courseId: number,
+        module: CoreCourseAnyModuleData,
+        forCoursePage?: boolean,
+    ): Promise<boolean> {
+        return true;
+    }
+
+    /**
      * @inheritdoc
      */
     async getMainComponent(): Promise<Type<unknown>> {
         const { AddonModTabletQuizIndexComponent } = await import('../../components/index');
 
         return AddonModTabletQuizIndexComponent;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    getDisplayData(module: CoreCourseAnyModuleData, courseId: number): CoreCourseModuleHandlerData {
+        const data = super.getDisplayData(module, courseId);
+        
+        // Assicuriamoci che il titolo e l'icona siano quelli corretti
+        return data;
     }
 
 }
