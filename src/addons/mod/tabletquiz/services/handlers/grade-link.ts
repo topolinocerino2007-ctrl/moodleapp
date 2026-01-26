@@ -25,7 +25,7 @@ import { ADDON_MOD_TABLETQUIZ_COMPONENT, ADDON_MOD_TABLETQUIZ_MODNAME } from '..
 export class AddonModTabletQuizGradeLinkHandlerService extends CoreContentLinksModuleGradeHandler {
 
     name = 'AddonModTabletQuizGradeLinkHandler';
-    canReview = false;
+    canReview = true;
 
     constructor() {
         super(ADDON_MOD_TABLETQUIZ_COMPONENT, ADDON_MOD_TABLETQUIZ_MODNAME);
@@ -34,3 +34,4 @@ export class AddonModTabletQuizGradeLinkHandlerService extends CoreContentLinksM
 }
 
 export const AddonModTabletQuizGradeLinkHandler = makeSingleton(AddonModTabletQuizGradeLinkHandlerService);
+
