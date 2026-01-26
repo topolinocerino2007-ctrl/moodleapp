@@ -4,7 +4,7 @@
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-// http://www.apache.org/licenses/LICENSE-2.0
+//     http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
@@ -26,6 +26,7 @@ import { CorePlatform } from '@services/platform';
 import { CoreLogger } from '@singletons/logger';
 import { CorePromisedValue } from '@classes/promised-value';
 import { register } from 'swiper/element/bundle';
+import { CoreConfig } from '@services/config';
 import { CoreWait } from '@singletons/wait';
 import { CoreOpener } from '@singletons/opener';
 import { BackButtonPriority } from '@/core/constants';
@@ -47,6 +48,7 @@ export class AppComponent implements OnInit, AfterViewInit {
      * @inheritdoc
      */
     ngOnInit(): void {
+        
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const win = <any> window;
 
@@ -74,19 +76,20 @@ export class AppComponent implements OnInit, AfterViewInit {
         document.addEventListener('ionBackButton', (event: BackButtonEvent) => {
             event.detail.register(BackButtonPriority.QUIT_APP, async () => {
                 const initialPath = CoreNavigator.getCurrentPath();
-
                 if (initialPath.startsWith('/main/')) {
-                    // Main menu has its own callback to handle back.
-                    // If this callback is called it means we should exit app.
+                    // Main menu has its own callback to handle back. If this callback is called it means we should exit app.
                     CoreApp.closeApp();
+
                     return;
                 }
 
                 // This callback can be called at the same time as Ionic's back navigation callback.
                 // Check if the path changes due to the back navigation handler, to know if we're at root level.
+                // Ionic doc recommends IonRouterOutlet.canGoBack, but there's no easy way to get the current outlet from here.
+                // The path seems to change immediately (0 ms timeout), but use 50ms just in case.
                 await CoreWait.wait(50);
 
-                if (CoreNavigator.getCurrentPath() !== initialPath) {
+                if (CoreNavigator.getCurrentPath() != initialPath) {
                     // Ionic has navigated back, nothing else to do.
                     return;
                 }
@@ -96,30 +99,32 @@ export class AppComponent implements OnInit, AfterViewInit {
             });
         });
 
-        // Workaround for aria-hidden + focus issue
+        // Workaround for error "Blocked aria-hidden on an element because its descendant retained
+        // focus. The focus must not be hidden from assistive technology users. Avoid using
+        // aria-hidden on a focused element or its ancestor. Consider using the inert attribute
+        // instead, which will also prevent focus. For more details, see the aria-hidden section of the
+        // WAI-ARIA specification at https://w3c.github.io/aria/#aria-hidden."
         const observer = new MutationObserver((mutations) => {
             if (!(document.activeElement instanceof HTMLElement)) {
                 return;
             }
-
             for (const mutation of mutations) {
-                if (
-                    mutation.target instanceof HTMLElement &&
-                    mutation.target.ariaHidden === 'true' &&
-                    mutation.target.contains(document.activeElement)
-                ) {
+                if (mutation.target instanceof HTMLElement &&
+                        mutation.target.ariaHidden === 'true' &&
+                        mutation.target.contains(document.activeElement)) {
                     document.activeElement.blur();
+
                     return;
                 }
             }
         });
-
         observer.observe(document.body, {
             attributeFilter: ['aria-hidden'],
             subtree: true,
         });
 
         // @todo Pause Youtube videos in Android when app is put in background or screen is locked?
+        // See: https://github.com/moodlehq/moodleapp/blob/ionic3/src/app/app.component.ts#L312
     }
 
     /**
@@ -138,12 +143,17 @@ export class AppComponent implements OnInit, AfterViewInit {
     }
 
     /**
-     * Set the system UI colors after hiding the splash to ensure it's correct.
+     * Set the system UI Colors after hiding the splash to ensure it's correct.
+     *
+     * @returns Promise resolved when done.
      */
     protected async setSystemUIColorsAfterSplash(): Promise<void> {
-        // Only needed on Android
+        // When the app starts and the splash is hidden, the color of the bars changes from transparent to black.
+        // We have to set the current color but we don't know when the change will be made.
+        // This problem is only related to Android, so on iOS it will be only set once.
         if (!CorePlatform.isAndroid()) {
             CoreApp.setSystemUIColors();
+
             return;
         }
 
@@ -152,10 +162,10 @@ export class AppComponent implements OnInit, AfterViewInit {
         const interval = window.setInterval(() => {
             CoreApp.setSystemUIColors();
         });
-
         setTimeout(() => {
             clearInterval(interval);
             promise.resolve();
+
         }, 1000);
 
         return promise;
