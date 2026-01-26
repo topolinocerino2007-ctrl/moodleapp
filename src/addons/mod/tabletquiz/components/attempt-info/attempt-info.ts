@@ -47,32 +47,24 @@ async reviewAttempt(): Promise<void> {
     const attemptId = this.attempt.id;
     const cmId = this.tabletquiz.coursemodule;
     const courseId = this.tabletquiz.course;
-    const site = CoreSites.getRequiredCurrentSite();
 
-    // 1. ROTTA NATIVA (Il "Sacro Graal"): 
-    // Ora che l'ID è com.moodle.moodlemobile, questa rotta dovrebbe sbloccarsi
-    const nativePath = `addon/mod_tabletquiz/review/${courseId}/${cmId}/${attemptId}`;
-    
-    // 2. URL WEB (Il Piano B):
-    const url = `${site.getURL()}/mod/tabletquiz/review.php?attempt=${attemptId}&cmid=${cmId}`;
+    // Costruiamo il percorso interno dell'app (Routing)
+    // Basato sul tuo module: ADDON_MOD_TABLETQUIZ_PAGE_NAME + i parametri
+    const path = `tabletquiz/${courseId}/${cmId}/review/${attemptId}`;
 
-    console.log("Tentativo di revisione nativa su path:", nativePath);
+    console.log("Forzo la revisione nativa su path:", path);
 
     try {
-        // Proviamo prima la via più pulita: navigazione interna Angular
-        await CoreNavigator.navigate(nativePath);
-        console.log("Navigazione nativa riuscita.");
+        // Navighiamo internamente. Se il file ./pages/review/review è compilato, si aprirà questo.
+        await CoreNavigator.navigate(path);
     } catch (error) {
-        console.warn("Rotta nativa non mappata, provo con ContentLinksHelper o Browser:", error);
-
-        // Se la rotta nativa non è registrata nell'addon, usiamo il tuo metodo originale
-        const handled = await CoreContentLinksHelper.handleLink(url);
-
-        if (!handled) {
-            // Se nemmeno l'Helper lo gestisce, forziamo l'apertura interna.
-            // Grazie all'ID allineato nel config.xml, il server non ti butterà fuori.
-            (site as any).openInInternalBrowser(url);
-        }
+        console.error("Errore navigazione interna, provo apertura protetta:", error);
+        
+        // Se la navigazione interna fallisce, usiamo l'apertura interna al sito
+        // ma passando per il sito WebService, non per il browser di sistema.
+        const site = CoreSites.getRequiredCurrentSite();
+        const url = `${site.getURL()}/mod/tabletquiz/review.php?attempt=${attemptId}`;
+        site.openInInternalBrowser(url);
     }
 }
 
@@ -147,4 +139,5 @@ async reviewAttempt(): Promise<void> {
         }
     }
 }
+
 
