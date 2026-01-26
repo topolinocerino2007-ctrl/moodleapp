@@ -47,23 +47,20 @@ export class AddonModTabletQuizAttemptInfoComponent implements OnChanges {
         const cmId = this.tabletquiz.coursemodule;
         const courseId = this.tabletquiz.course;
 
-        // Percorso interno dell'app (Mobile Routing)
+        // Proviamo prima la strada nativa (veloce)
         const path = `tabletquiz/${courseId}/${cmId}/review/${attemptId}`;
 
-        console.log("Forzo la revisione nativa su path:", path);
-
         try {
-            // Tenta la navigazione fluida interna
             await CoreNavigator.navigate(path);
         } catch (error) {
-            console.error("Navigazione interna fallita, uso fallback protetto:", error);
-            
-            // Fallback: Apre la pagina del sito ma restando dentro l'interfaccia dell'app
+            // Fallback: se la rotta nativa non risponde, usiamo il gestore link
             const site = CoreSites.getRequiredCurrentSite();
             const url = `${site.getURL()}/mod/tabletquiz/review.php?attempt=${attemptId}`;
             
-            // Questo metodo è più sicuro di openInInternalBrowser perché gestisce i permessi
-            CoreContentLinksHelper.goInSite(site, url);
+            console.log("Apertura tramite handleLink:", url);
+            
+            // Questo metodo gestisce token e sessione per te
+            await CoreContentLinksHelper.handleLink(url);
         }
     }
 
@@ -138,6 +135,7 @@ export class AddonModTabletQuizAttemptInfoComponent implements OnChanges {
         }
     }
 }
+
 
 
 
