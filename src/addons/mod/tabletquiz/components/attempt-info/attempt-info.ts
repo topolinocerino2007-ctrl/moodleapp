@@ -14,6 +14,9 @@ import { CoreDom } from '@singletons/dom';
 import { isSafeNumber } from '@/core/utils/types';
 import { AddonModTabletQuizAttemptStateComponent } from '../attempt-state/attempt-state';
 import { CoreSharedModule } from '@/core/shared.module';
+import { CoreNavigator } from '@services/navigator';
+import { CoreSites } from '@services/sites';
+import { CoreContentLinksHelper } from '@features/contentlinks/services/contentlinks-helper';
 
 /**
  * Component that displays an attempt info.
@@ -39,34 +42,33 @@ export class AddonModTabletQuizAttemptInfoComponent implements OnChanges {
     overTime?: string;
     gradeItemMarks: { name: string; grade: string }[] = [];
     component = ADDON_MOD_TABLETQUIZ_COMPONENT_LEGACY;
-
-    /**
+/**
      * Navigazione verso la revisione del tentativo.
      */
-async reviewAttempt(): Promise<void> {
-    const attemptId = this.attempt.id;
-    const cmId = this.tabletquiz.coursemodule;
-    const courseId = this.tabletquiz.course;
+    async reviewAttempt(): Promise<void> {
+        const attemptId = this.attempt.id;
+        const cmId = this.tabletquiz.coursemodule;
+        const courseId = this.tabletquiz.course;
 
-    // Costruiamo il percorso interno dell'app (Routing)
-    // Basato sul tuo module: ADDON_MOD_TABLETQUIZ_PAGE_NAME + i parametri
-    const path = `tabletquiz/${courseId}/${cmId}/review/${attemptId}`;
+        // Percorso interno dell'app (Mobile Routing)
+        const path = `tabletquiz/${courseId}/${cmId}/review/${attemptId}`;
 
-    console.log("Forzo la revisione nativa su path:", path);
+        console.log("Forzo la revisione nativa su path:", path);
 
-    try {
-        // Navighiamo internamente. Se il file ./pages/review/review è compilato, si aprirà questo.
-        await CoreNavigator.navigate(path);
-    } catch (error) {
-        console.error("Errore navigazione interna, provo apertura protetta:", error);
-        
-        // Se la navigazione interna fallisce, usiamo l'apertura interna al sito
-        // ma passando per il sito WebService, non per il browser di sistema.
-        const site = CoreSites.getRequiredCurrentSite();
-        const url = `${site.getURL()}/mod/tabletquiz/review.php?attempt=${attemptId}`;
-        site.openInInternalBrowser(url);
+        try {
+            // Tenta la navigazione fluida interna
+            await CoreNavigator.navigate(path);
+        } catch (error) {
+            console.error("Navigazione interna fallita, uso fallback protetto:", error);
+            
+            // Fallback: Apre la pagina del sito ma restando dentro l'interfaccia dell'app
+            const site = CoreSites.getRequiredCurrentSite();
+            const url = `${site.getURL()}/mod/tabletquiz/review.php?attempt=${attemptId}`;
+            
+            // Questo metodo è più sicuro di openInInternalBrowser perché gestisce i permessi
+            CoreContentLinksHelper.goInSite(site, url);
+        }
     }
-}
 
     /**
      * @inheritdoc
@@ -139,5 +141,6 @@ async reviewAttempt(): Promise<void> {
         }
     }
 }
+
 
 
