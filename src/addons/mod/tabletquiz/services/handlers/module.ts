@@ -14,11 +14,16 @@
 
 import { Injectable, Type } from '@angular/core';
 import { CoreCourseModuleHandler, CoreCourseModuleHandlerData } from '@features/course/services/module-delegate';
-import { CoreCourseAnyModuleData } from '@features/course/services/course-helper';
+// CORRETTO: Usiamo CoreCourseModuleData come richiesto dalla tua versione di Moodle
+import { CoreCourseModuleData } from '@features/course/services/course-helper'; 
 import { makeSingleton } from '@singletons';
 import { CoreModuleHandlerBase } from '@features/course/classes/module-base-handler';
 import { ADDON_MOD_TABLETQUIZ_MODNAME, ADDON_MOD_TABLETQUIZ_PAGE_NAME } from '../../constants';
 import { ModFeature, ModPurpose } from '@addons/mod/constants';
+
+// AGGIUNTI: Necessari per far funzionare getDisplayData senza il super
+import { CoreCourse } from '@features/course/services/course';
+import { CoreNavigator } from '@services/navigator';
 
 /**
  * Handler to support tabletquiz modules.
@@ -48,7 +53,6 @@ export class AddonModTabletQuizModuleHandlerService extends CoreModuleHandlerBas
 
     /**
      * Verifica se il modulo è abilitato a livello globale.
-     * Restituendo true, forziamo l'app a non mostrare "Content not available".
      */
     async isEnabled(): Promise<boolean> {
         return true;
@@ -56,11 +60,11 @@ export class AddonModTabletQuizModuleHandlerService extends CoreModuleHandlerBas
 
     /**
      * Verifica se il modulo è abilitato per un corso specifico.
-     * Sovrascriviamo la base per evitare blocchi dai dati del server.
+     * CORRETTO: Cambiato CoreCourseAnyModuleData in CoreCourseModuleData
      */
     async isEnabledForCourse(
         courseId: number,
-        module: CoreCourseAnyModuleData,
+        module: CoreCourseModuleData,
         forCoursePage?: boolean,
     ): Promise<boolean> {
         return true;
@@ -77,12 +81,21 @@ export class AddonModTabletQuizModuleHandlerService extends CoreModuleHandlerBas
 
     /**
      * @inheritdoc
+     * CORRETTO: Rimosso super.getDisplayData e implementato manualmente
      */
-    getDisplayData(module: CoreCourseAnyModuleData, courseId: number): CoreCourseModuleHandlerData {
-        const data = super.getDisplayData(module, courseId);
-        
-        // Assicuriamoci che il titolo e l'icona siano quelli corretti
-        return data;
+    getDisplayData(module: CoreCourseModuleData, courseId: number): CoreCourseModuleHandlerData {
+        return {
+            icon: CoreCourse.getModuleIconSrc(ADDON_MOD_TABLETQUIZ_MODNAME, module.handlerdata?.iconurl),
+            title: module.name,
+            class: 'addon-mod-tabletquiz-handler',
+            action: (event: Event, navCtrl: any, module: CoreCourseModuleData, courseId: number): void => {
+                const params = {
+                    module: module,
+                    courseId: courseId,
+                };
+                CoreNavigator.navigateToSitePath(`${this.pageName}/${courseId}/${module.id}`, { params });
+            },
+        };
     }
 
 }
