@@ -31,6 +31,7 @@ import { AddonModTabletQuizListLinkHandler } from './services/handlers/list-link
 import { AddonModTabletQuizModuleHandler } from './services/handlers/module';
 import { AddonModTabletQuizPrefetchHandler } from './services/handlers/prefetch';
 import { AddonModTabletQuizPushClickHandler } from './services/handlers/push-click';
+import { AddonModTabletQuizAttemptInfoComponent } from './components/attempt-info/attempt-info';
 import { AddonModTabletQuizReviewLinkHandler } from './services/handlers/review-link';
 import { AddonModTabletQuizSyncCronHandler } from './services/handlers/sync-cron';
 import { ADDON_MOD_TABLETQUIZ_COMPONENT_LEGACY, ADDON_MOD_TABLETQUIZ_PAGE_NAME } from './constants';
@@ -82,6 +83,7 @@ const routes: Routes = [
     imports: [
         CoreMainMenuTabRoutingModule.forChild(routes),
         AddonModTabletQuizAccessRulesModule,
+        AddonModTabletQuizAttemptInfoComponent, // <--- AGGIUNGI QUESTA RIGA (Riga 77 circa)
     ],
     providers: [
         {
@@ -104,3 +106,4 @@ const routes: Routes = [
     ],
 })
 export class AddonModTabletQuizModule {}
+
