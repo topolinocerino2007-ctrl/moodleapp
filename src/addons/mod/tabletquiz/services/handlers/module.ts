@@ -14,14 +14,11 @@
 
 import { Injectable, Type } from '@angular/core';
 import { CoreCourseModuleHandler, CoreCourseModuleHandlerData } from '@features/course/services/module-delegate';
-// CORRETTO: Usiamo CoreCourseModuleData come richiesto dalla tua versione di Moodle
 import { CoreCourseModuleData } from '@features/course/services/course-helper'; 
 import { makeSingleton } from '@singletons';
 import { CoreModuleHandlerBase } from '@features/course/classes/module-base-handler';
 import { ADDON_MOD_TABLETQUIZ_MODNAME, ADDON_MOD_TABLETQUIZ_PAGE_NAME } from '../../constants';
 import { ModFeature, ModPurpose } from '@addons/mod/constants';
-
-// AGGIUNTI: Necessari per far funzionare getDisplayData senza il super
 import { CoreCourse } from '@features/course/services/course';
 import { CoreNavigator } from '@services/navigator';
 
@@ -60,7 +57,6 @@ export class AddonModTabletQuizModuleHandlerService extends CoreModuleHandlerBas
 
     /**
      * Verifica se il modulo è abilitato per un corso specifico.
-     * CORRETTO: Cambiato CoreCourseAnyModuleData in CoreCourseModuleData
      */
     async isEnabledForCourse(
         courseId: number,
@@ -81,14 +77,15 @@ export class AddonModTabletQuizModuleHandlerService extends CoreModuleHandlerBas
 
     /**
      * @inheritdoc
-     * CORRETTO: Rimosso super.getDisplayData e implementato manualmente
      */
     getDisplayData(module: CoreCourseModuleData, courseId: number): CoreCourseModuleHandlerData {
         return {
+            // CORRETTO: handlerData con la D maiuscola
             icon: CoreCourse.getModuleIconSrc(ADDON_MOD_TABLETQUIZ_MODNAME, module.handlerData?.iconurl),
             title: module.name,
             class: 'addon-mod-tabletquiz-handler',
-            action: (event: Event, navCtrl: any, module: CoreCourseModuleData, courseId: number): void => {
+            // CORRETTO: rimosso navCtrl per combaciare con la firma richiesta (TS2322)
+            action: (event: Event, module: CoreCourseModuleData, courseId: number): void => {
                 const params = {
                     module: module,
                     courseId: courseId,
@@ -101,4 +98,3 @@ export class AddonModTabletQuizModuleHandlerService extends CoreModuleHandlerBas
 }
 
 export const AddonModTabletQuizModuleHandler = makeSingleton(AddonModTabletQuizModuleHandlerService);
-
