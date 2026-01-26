@@ -80,11 +80,16 @@ export class AddonModTabletQuizModuleHandlerService extends CoreModuleHandlerBas
      */
     getDisplayData(module: CoreCourseModuleData, courseId: number): CoreCourseModuleHandlerData {
         return {
-            // CORRETTO: handlerData con la D maiuscola
-            icon: CoreCourse.getModuleIconSrc(ADDON_MOD_TABLETQUIZ_MODNAME, module.handlerData?.iconurl),
+            /**
+             * FISSA: Moodle 4.x usa module.modicon. 
+             * Proprietà iconurl non esistente in CoreCourseModuleHandlerData.
+             */
+            icon: module.modicon || CoreCourse.getModuleIconSrc(ADDON_MOD_TABLETQUIZ_MODNAME),
             title: module.name,
             class: 'addon-mod-tabletquiz-handler',
-            // CORRETTO: rimosso navCtrl per combaciare con la firma richiesta (TS2322)
+            /**
+             * FISSA: Rimosso navCtrl. La firma deve essere (event, module, courseId).
+             */
             action: (event: Event, module: CoreCourseModuleData, courseId: number): void => {
                 const params = {
                     module: module,
