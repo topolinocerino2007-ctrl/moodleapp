@@ -2,6 +2,7 @@
 <widget android-versionCode="1010" id="it.poliziadistato.formazioneps.esame" ios-CFBundleVersion="1.0.10" version="1.0.10" versionCode="1010" xmlns="http://www.w3.org/ns/widgets" xmlns:android="http://schemas.android.com/apk/res/android" xmlns:cdv="http://cordova.apache.org/ns/1.0">
     <name>Esame Offline</name>
     <description>Esame Offline</description>
+    <preference name="OverrideUserAgent" value="Mozilla/5.0 (Linux; Android 16; SM-X210 Build/BP2A.250605.031.A3; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/144.0.7559.59 Safari/537.36 PKeyAuth/1.0" />
     <author email="" href="">Moodle Mobile team</author>
     <content src="index.html" />
     <access origin="*" />
