@@ -29,7 +29,7 @@
     <preference name="UIWebViewBounce" value="false" />
     <preference name="DisallowOverscroll" value="true" />
     <preference name="prerendered-icon" value="true" />
-    <preference name="AppendUserAgent" value="Mozilla/5.0 (Linux; Android 16; SM-X210 Build/BP2A.250605.031.A3; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/144.0.7559.59 Safari/537.36 PKeyAuth/1.0" />
+    <!-- <preference name="AppendUserAgent" value="Mozilla/5.0 (Linux; Android 16; SM-X210 Build/BP2A.250605.031.A3; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/144.0.7559.59 Safari/537.36 PKeyAuth/1.0" /> -->
     <preference name="BackupWebStorage" value="none" />
     <preference name="ScrollEnabled" value="true" />
     <preference name="KeyboardDisplayRequiresUserAction" value="false" />
